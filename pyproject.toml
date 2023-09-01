@@ -1,0 +1,20 @@
+# https://peps.python.org/pep-0621/
+[project]
+name = "underground"
+description = "Unsupervised Cell Type Discovery using Autoencoders"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Eva K. Nichols", email = "" },
+    { name = "Bruno Urien", email = "" },
+]
+dynamic = ["version"]
+dependencies = [
+  "argparse",
+  "tqdm",
+  "scikit-learn",
+  "cellpose[gui]",
+  "napari[all]"
+]
+
+
