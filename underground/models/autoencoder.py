@@ -1,6 +1,5 @@
 import torch
 
-
 class Autoencoder(torch.nn.Module):
 
     def __init__(
@@ -9,7 +8,6 @@ class Autoencoder(torch.nn.Module):
             downsampling_factors,
             fmaps,
             fmul,
-            fmaps_bottle,
             kernel_size=3):
 
         super(Autoencoder, self).__init__()
@@ -21,28 +19,30 @@ class Autoencoder(torch.nn.Module):
         for downsampling_factor in downsampling_factors:
 
             encoder.append(
-                    torch.nn.Conv3d(
+                    torch.nn.Conv2d(
                         in_channels,
                         fmaps,
                         kernel_size))
             encoder.append(
                     torch.nn.ReLU(inplace=True))
             encoder.append(
-                    torch.nn.Conv3d(
+                    torch.nn.Conv2d(
                         fmaps,
                         fmaps,
                         kernel_size))
             encoder.append(
                     torch.nn.ReLU(inplace=True))
             encoder.append(
-                    torch.nn.MaxPool3d(downsampling_factor))
+                    torch.nn.MaxPool2d(downsampling_factor))
 
             in_channels = fmaps
 
             fmaps = fmaps * fmul
 
+        fmaps_bottle = fmaps
+
         encoder.append(
-            torch.nn.Conv3d(
+            torch.nn.Conv2d(
                 in_channels,
                 fmaps_bottle,
                 kernel_size))
@@ -56,7 +56,7 @@ class Autoencoder(torch.nn.Module):
         fmaps = in_channels
 
         decoder.append(
-            torch.nn.Conv3d(
+            torch.nn.Conv2d(
                 fmaps_bottle,
                 fmaps,
                 kernel_size))
@@ -72,14 +72,14 @@ class Autoencoder(torch.nn.Module):
                     scale_factor=downsampling_factor,
                     mode='trilinear'))
             decoder.append(
-                torch.nn.Conv3d(
+                torch.nn.Conv2d(
                     in_channels,
                     fmaps,
                     kernel_size))
             decoder.append(
                 torch.nn.ReLU(inplace=True))
             decoder.append(
-                torch.nn.Conv3d(
+                torch.nn.Conv2d(
                     fmaps,
                     fmaps,
                     kernel_size))
@@ -89,7 +89,7 @@ class Autoencoder(torch.nn.Module):
             in_channels = fmaps
 
         decoder.append(
-            torch.nn.Conv3d(
+            torch.nn.Conv2d(
                 in_channels,
                 out_channels,
                 kernel_size))
@@ -102,4 +102,4 @@ class Autoencoder(torch.nn.Module):
 
         dec = self.decoder(enc)
 
-        return dec
+        return enc, dec
